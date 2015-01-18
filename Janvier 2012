@@ -1,0 +1,373 @@
+# Annales-SDD
+
+Exercice 1 : d'UML à Java
+
+Question 1 :
+
+Pour les packages : la seule condition est de mettre PolygoneImpl
+et IterateurPoints dans le même package pour avoir un accès par référence à
+la liste des Point points.
+
+Pour l'itérateur, j'ai juste fait ça un peu plus proprement que ce qui
+est demandé.
+
+public interface Point {
+  void setPoint(double x, douoble y);
+}
+
+public interface Polygone {
+  void ajouterPoint(Point pt);
+  Iterateur getIterateur();
+}
+
+public interface FabriqueForme {
+  Polygone creerPolygone();
+}
+
+import java.util.Iterator;
+public interface Iterateur<T> extends Iterator<T>{
+  boolean aSuivant();
+  T suivant();
+}
+
+public class PointImpl implements Point{
+  protected int x;
+  protected int y;
+  
+  public PointImpl() {}
+  
+  public void setPoint(double x, double y) {
+    this.x = x;
+    this.y = y;
+  }
+}
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Iterator;
+public class PolygoneImpl implements Polygone, Iterable<T>{
+  protected List<Point> points;
+  
+  protected PolygoneImpl() {
+    points = new LinkedList<Point>;
+  }
+  
+  public void ajouterPoint(Point pt) {
+    if (pt == null) throw new IllegalArgumentException();
+    points.add(pt);
+  }
+  
+  @deprecated
+  public Iterateur<T> getIterateur(){
+    return iterator();
+  }
+  
+  public Iterator<T> iterator() {
+    return new IterateurPoints();
+  }
+}
+
+public class FabriqueFormeSingleton{
+  private FabriqueForme fabrique;
+  
+  public void FabriqueForme(FabriqueForme fact) {
+    this.fabrique = fact;
+  }
+  
+  public FabriqueForme getFabrique() {
+    return fabrique;
+  }
+}
+
+public class IterateurPoints implements Iterateur<Point>{
+  private PolygoneImpl pol;
+  private int position;
+  
+  protected IterateurPoints(PolygoneImpl p) {
+    this.pol = p;
+  }
+  
+  @deprecated
+  public boolean aSuivant() {
+    return hasNext();
+  }
+  
+  @deprecated
+  public Point suivant() {
+    return next();
+  }
+  
+  public boolean hasNext() {
+    return position < points.size()-1;
+  }
+  
+  public Point next() {
+    return points.get(position++);
+  }
+  
+  public Point remove() {
+    throw new UnsupportedOperationException();
+  }
+}
+
+
+
+Question 2 :
+
+/*Passage par un StringBuilder afin de gagner en efficacité :
+l'utilisation de la sortie standard à chaque noeud visité est coûteuse en temps.*/
+
+classe Arbre : 
+
+public void visiter() {
+  StringBuilder res = new StringBuilder();
+  StringBuilder.append(nom+" : ");
+  visiter(racine);
+  System.out.println(res);
+}
+
+
+classe Noeud :
+/*Un Noeud n'est jamais instancié*/
+public void visiter(StringBuilder res) {}
+
+
+/*Un NoeudBinaire n'est jamais instancié*/
+classe NoeudBinaire :
+public void visiter(StringBuilder res) {}
+
+
+classe NoeudValeur :
+public void visiter(StringBuilder res) {
+  res.append(val+"  ");
+}
+
+
+classe NoeudPlus :
+public void visiter(StringBuilder res) {
+  res.append("+  ");
+  if (filsGauche != null)
+    filsGauche.visiter(res);
+  if (filsDroit != null)
+    filsDroit.visiter(res);
+}
+
+classe NoeudMoins :
+public void visiter(StringBuilder res) {
+  res.append("-  ");
+  if (filsGauche != null)
+    filsGauche.visiter(res);
+  if (filsDroit != null)
+    filsDroit.visiter(res);
+}
+
+
+Question 3 : 
+-Parce qu'il faudrait autant de méthodes visiter que de parcours envisagés.
+ On alourdit inutilement les classes de notre structure, le code perd en lisibilité.
+-Parce que qu'il faut toujours s'efforcer de coder élégamment.
+
+
+Question 4 :
+
+Les classes Visitor et NoeudBinaire doivent se trouver dans le même package pour 
+avoir accès aux fils d'un NoeudBinaire (protected).
+Encore une fois, on passe par un StringBuilder, pour les même raisons ques précédemment.
+
+Pour avoir accès au noeud racine, on pourrait décider que Visitor serait une classe
+interne à Arbre. Cependant, elle n'a rien à faire là, on suppose donc que la classe
+Arbre est munie d'une opération getRoot() qui rend le Noeud racine de l'Arbre courant.
+De même, on suppose que la classe Arbre est munie d'une opération getName() qui rend
+le nom de l'Arbre courant.
+On suppose que la classe NoeudValeur est munie d'une méthode getValue() pour retourner
+la valeur du NoeudValeur courant.
+
+public class VisitorInf {
+
+  public void visitArbre(Arbre a) {
+    StringBuilder res = new StringBuilder();
+    res.append(a.getName()+" : ");
+    visitNoeud(a.getRoot(), res);
+    System.out.println(res);
+  }
+  
+  public void visitNoeud(Noeud n, StringBuilder res) {
+    if (n == null) return;
+    if      (n instanceof NoeudBinaire)  visitNoeudBinaire(n, res);
+    else    (n instanceof NoeudValeur)   visitNoeudValeur(n, res);
+  }
+  
+  public void visitNoeudBinaire(NoeudBinaire n, StringBuilder res) {
+    if (n instanceof NoeudPlus)  visitNoeudPlus(n, res);
+    else                         visitNoeudMoins(n, res);
+  }
+  
+  public void visitNoeudValeur(NoeudValeur n, StringBuilder res) {
+    res.append(n.getValue()+"  ");
+  }
+  
+  public void visitNoeudPlus(NoeudPlus n, StringBuilder res) {
+    visitNoeud(n.filsGauche);
+    res.append("+  ");
+    visitNoeud(n.filsDroit);
+  }
+  
+  public void visitNoeudMoins(NoeudMoins n, StringBuilder res) {
+    visitNoeud(n.filsGauche);
+    res.append("-  ");
+    visitNoeud(n.filsDroit);
+  }
+  
+  
+  Question 5 :
+  
+  Grâce au polymorphisme, un Visiteur est un VisiteurArbre.
+  Il suffit de créer une classe implémentant VisiteurArbre, et le parcours se fera
+  de la manière dont on le souhaite, sans toucher au code.
+  
+  Question 6 :
+  
+  Comme dans la Q4, on considèrera à notre disposition les méthodes getName(),
+  getRoot(), getValeur, et on passera par un StringBuilder.
+  
+  
+  classe Arbre : 
+  
+  public void accepter(VisiteurArbre v) {
+    StringBuilder res = new StringBuilder();
+    res.append(getName()+"  ");
+    v.visitArbre(this, res);
+  }
+  
+  
+  classe Noeud :
+  /*Ne va jamais être appelée*/
+  public void accepter(VisiteurArbre v, StringBuilder res) {}
+  
+  
+  classe NoeudBinaire :
+  /*Ne va jamais être appelée*
+  public void accepter(VisiteurArbre v, StringBuilder res) {}
+  
+  
+  classe NoeudValeur :
+  
+  public void accepter(VisiterArbre v, StringBuilder res) {
+    v.visitNoeudValeur(this, res);
+  }
+  
+  classe NoeudPlus :
+  public void accepter(VisiterArbre v, StringBuilder res) {
+    v.visitNoeudPlus(this, res);
+  }
+  
+  
+  classe NoeudMoins :
+  public void accepter(VisiterArbre v, StringBuilder res) {
+    v.visitNoeudMoins(this, res);
+  }
+  
+  
+  Question 7 : 
+  Comme précédemment, on utilisera les méthodes getName(), getRoot(),
+  getValue() et les StringBuilder
+  
+  public class VisiteurAffichagePostfixe implements VisiteurArbre{
+  
+    public void visitArbre(Arbre a) {
+    StringBuilder res = new StringBuilder();
+    res.append(a.getName()+" : ");
+    Noeud r = a.getRoot();
+    if (r != null)
+      r.accepter(this, res);
+    System.out.println(res);
+  }
+  
+  public void visitNoeud(Noeud n, StringBuilder res) {}
+  
+  public void visitNoeudBinaire(NoeudBinaire n, StringBuilder res) {}
+  
+  public void visitNoeudValeur(NoeudValeur n, StringBuilder res) {
+    res.append(n.getValue()+"  ");
+  }
+  
+  public void visitNoeudPlus(NoeudPlus n, StringBuilder res) {
+    res.append("+  ");
+    if (filsGauche != null) n.filsGauche.accepter(this, res);
+    if (filsDroit != null)  n.filsDroit.accepter(this, res);
+  }
+  
+  public void visitNoeudMoins(NoeudMoins n, StringBuilder res) {
+    res.append("+  ");
+    if (filsGauche != null) n.filsGauche.accepter(this, res);
+    if (filsDroit != null)  n.filsDroit.accepter(this, res);
+  }
+}
+
+
+
+Question 8 :
+Pour l'affichage prefixe, on utilisera une class Queue<T> munie des opérations
+enqueue(T t) : void, dequeue() : T, isEmpty() : boolean.
+Cette classe implémente une file de type FIFO.
+
+public class VisiteurAffichageLargeur implements VisiteurArbre {
+  private Queue<Noeud> arbre;
+  private Queue<Boolean> ht;
+  private boolean temp;
+
+  public void visitArbre(Arbre a) {
+    StringBuilder res = new StringBuilder();
+    arbre = new Queue<>();
+    ht= new Queue<>();
+    Noeud r = a.getRoot();
+    if (r != null) {
+      temp = true;
+      arbre.enqueue(r);
+      ht.enqueue(true);
+    }
+    while (! arbre.isEmpty()) {
+      arbre.dequeue().accepter(this, res);
+    }
+    System.out.println(res);
+    
+  public void visitNoeud(Noeud n, StringBuilder res) {}
+  
+  public void visitNoeudBinaire(NoeudBinaire n, StringBuilder res) {}
+  
+  public void visitNoeudValeur(NoeudValeur n, StringBuilder res) {
+    boolean cur = ht.dequeue();
+    if (cur != temp) res.append("\n");
+    temp = cur;
+    res.append(n.getValue()+"  ");
+  }
+  
+  public void visitNoeudPlus(NoeudPlus n, StringBuilder res) {
+    boolean cur = ht.dequeue();
+    if (cur != temp) res.append("\n");
+    res.append("+  ");
+    if (n.filsGauche != null) {
+      arbre.enqueue(n.filsGauche);
+      ht.enqueue(!cur);
+    }
+    if (n.filsDroit != null) {
+      arbre.enqueue(n.filsDroit);
+      ht.enqueue(!cur);
+    }
+  }
+  
+  public void visitNoeudMoins(NoeudPlus n, StringBuilder res) {
+    boolean cur = ht.dequeue();
+    if (cur != temp) res.append("\n");
+    res.append("-  ");
+    if (n.filsGauche != null) {
+      arbre.enqueue(n.filsGauche);
+      ht.enqueue(!cur);
+    }
+    if (n.filsDroit != null) {
+      arbre.enqueue(n.filsDroit);
+      ht.enqueue(!cur);
+    }
+  }
+    
+
