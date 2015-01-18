@@ -354,6 +354,7 @@ public class VisiteurAffichageLargeur implements VisiteurArbre {
       arbre.enqueue(n.filsDroit);
       ht.enqueue(!cur);
     }
+    temp = cur;
   }
   
   public void visitNoeudMoins(NoeudPlus n, StringBuilder res) {
@@ -368,6 +369,7 @@ public class VisiteurAffichageLargeur implements VisiteurArbre {
       arbre.enqueue(n.filsDroit);
       ht.enqueue(!cur);
     }
+    temp = cur;
   }
     
 
