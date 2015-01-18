@@ -307,9 +307,15 @@ public class VisitorInf {
 
 
 Question 8 :
-Pour l'affichage prefixe, on utilisera une class Queue<T> munie des opérations
+Pour l'affichage prefixe, on utilisera une classe Queue<T> munie des opérations
 enqueue(T t) : void, dequeue() : T, isEmpty() : boolean.
 Cette classe implémente une file de type FIFO.
+Grâce à la Queue<>, on obtient les noeuds de gauche à droite en partant de la racine,
+étage par étage. La difficulté est le changement de ligne. Les variables temp et ht sont là pour ça :
+L'idée est de coder un étage par un booléen. Comme on travaille étage par étage, un changement
+de valeur correspond à un changement d'étage.
+On récupère la valeur de l'étage courant grâce à la valeur issue de ht, et la valeur de l'étage précédent
+grâce à la valeur temp.
 
 public class VisiteurAffichageLargeur implements VisiteurArbre {
   private Queue<Noeud> arbre;
