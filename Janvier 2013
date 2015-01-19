@@ -1,0 +1,159 @@
+Exercice 1
+
+J'arrive pas à lire le diagramme UML sur mon poly, mal imprimé, donc je passe.
+
+Exercice 2
+
+Question 2,3,4
+
+TAD LispList :
+
+Fonctions : 
+
+new     :                    -> LispList
+estVide : LispList           -> boolean
+car     : LispList           -> Elément
+cdr     : LispList           -> LispList
+cons    : LispList * Elément -> LispList
+
+
+Axiomes :
+
+car(cons(l, e)) = e
+cdr(cons(l, e)) = l
+estVide(new) = true
+estVide(cons(l, e)) = false
+
+
+Préconditions :
+
+Pré(car(l)) = non estVide(l)
+Pré(cdr(l)) = non estVide(l)
+
+
+Question 5 : 
+
+public interface LispList<T> {
+
+  boolean estVide();
+  
+  T car();
+  
+  LispList cdr();
+}
+
+
+Question 6
+
+static int longueur(LispList l) {
+  if (estVide(l)) return 0;
+  return longueur(l.cdr())+1;
+}
+
+
+Question 7 : 
+
+
+a-La classe Maillon ne va être utilisée que par MyLispList.
+b-Faire de Maillon une classe interne à MyLispList.
+c-JE NE SAIS PAS (les deux sont possibles cependant, mais je vais faire la version static)
+
+
+Question 8 :
+
+a-Un attribut pour l'élément T, deux attributs pour les liens aux maillons suivants et précédents.
+b-A partir du moment où Maillon est une classe interne, on peut se passer de méthodes d'accès
+  et ne faire que du passage par référence, du coup je comprend pas trop la question.
+  On part avec private.
+c-
+
+private static class Maillon<T> {
+  private T item;
+  private Maillon<T> next, previous;
+}
+
+
+Question 9 : 
+
+On veut parcourir la liste dans un seul sens, donc on peut déjà supprimer le double chaînage.
+Il y a un seul marqueur de fin : le Maillon possédant une référence vers le Maillon suivant à null.
+Pour éviter la recopie, on a juste à rendre le maillon suivant la tête.
+Prenons l'exemple d'une liste à 4 éléments, un maillon étant représenté par la lettre m suivie de sa position.
+
+l = m0 ---> m1 ---> m2 ---> m3
+    ^
+    |
+  first
+
+l.cdr() = m1 ---> m2 ---> m3
+          ^
+          |
+        first
+
+Ca marche parce qu'on ne modifie pas les maillons, on ne peut que les ajouter.
+Du coup, une sous-liste est immuable.
+
+
+Question 10 :
+
+private int size;
+private Maillon<T> first;
+
+Le constructeur initialise la taille à 0;
+
+
+Question 11 :
+
+public static LispList cons(T t, MyLispList l);
+
+public LispList cons(T t);
+
+Je préconise la deuxième solution.
+Justification : Quel est l'intérêt de passer par un langage objet si c'est pour coder
+les structures de données en fonctionnel ?
+
+
+Question 12 :
+
+import java.util.NoSuchElementException;
+public class MyLispList<T> {
+  private int size;
+  private Maillon<T> first;
+  
+  public MyLispList() {
+    size = 0;
+  }
+  
+  public boolean estVide() {
+    return size == 0;
+  }
+  
+  public T car() {
+    return first.item;
+  }
+  
+  public LispList cdr() {
+    if (estVide()) throw new NoSuchElementExcption();
+    MyLispList list = new MyLispList();
+    list.size = this.size-1;
+    list.first = first.next;
+    return list;
+  }
+  
+  public ListLisp cons(T t) {
+    Maillon<T> m = new Maillon<>
+    m.item = t;
+    m.next = first;
+    MyLispList l = new MyLispList();
+    l.size = this.size+1;
+    m.first = m;
+    return l;
+  }
+  
+  
+  Question 13 :
+  
+  static LispList<String> asStrings(LispList<T> l) {
+    if (estVide l) return new MyLispList<String>();
+    return cons(l.car().toString(), asStrings(l.cdr()));
+  }
