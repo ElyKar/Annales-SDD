@@ -1,0 +1,177 @@
+Exercice 1
+
+On vérifie que les coordonnées sont bien égales à ce qu'elles devraient être
+
+@Test
+public void testConstr1() {
+  MyPoint pt = new MyPoint(2, 5);
+  assertTrue(pt.getX() == 2);
+  assertTrue(pt.getY() == 5);
+}
+
+
+On vérifie que les coordonnées sont bien remplies par le constructeur 2.
+
+@Test
+public void testConstr2() {
+  MyPoint pt = new MyPoint(4, 5);
+  MyPoint p = new MyPoint(pt);
+  assertTrue(p.getX() == 4);
+  assertTrue(p.getY() == 5);
+}
+
+On vérifie le passage d'un point null (j'ai vérifié, pas d'exception levée à cause du final :
+Java considère qu'un paramètre à null a été initialisé)
+
+@Test
+public void testConstr2ParamNull() {
+  MyPoint pt = new MyPoint(null);
+  assertTrue(pt.getX() == 0);
+  assertTrue(pt.getY() == 0);
+}
+
+
+Premier cas : translation simple
+
+@Test
+public void testTranslate() {
+  MyPoint p = new MyPoint(null);
+  MyPoint m = new MyPoint(2, 2);
+  MyPoint n = p.translate(m);
+  assertTrue(n.getX() == 2);
+  assertTrue(n.getY() == 2);
+}
+
+Deuxième cas : passage d'un vector null
+
+@Test
+public void testTranslateVectNull() {
+  MyPoint p = new MyPoint(null);
+  MyPoint m = p.translate(null);
+  assertTrue(m == null);
+}
+
+
+Exercice 2
+
+J'ai pas le courage de me lancer dans l'ASCII art, je passe.
+
+
+Exercice 3 :
+
+Fonctions :
+
+new        :                -> Pile
+pileVide   : Pile           -> boolean
+empiler    : Pile * Elément -> Pile
+depiler    : Pile           -> Pile
+sommetPile : Pile           -> Elément
+inserer    : Pile * Elément -> Pile
+
+Axiomes : 
+
+sommetPile(empiler(p,e)) = e
+depiler(empiler(p,e)) = p
+pileVide(new) = vrai
+pileVide(empiler(p,e)) = faux
+sommetPile(inserer(new, e)) = e;
+pileVide(inserer(p,e)) = faux
+
+
+Question 7 :
+
+a- Il s'agit d'une conséquence de deux axiomes différents, c'est bonc un théorème
+b- Représentons une pile à deux éléments et appliquons-y les deux opérations :
+
+|a| ---empiler(p, e)---> |e| ---depiler(p)---> |a|
+|b|                      |a|                   |b|
+                         |b|
+                         
+|a| ---depiler(p)---> |b| ---empiler(p, e)---> |e|
+|b|                                            |b|
+
+On voit ici la contradiction.
+
+
+Exercice 4 :
+
+Question 8 :
+
+-Utiliser un tableau de HashSet, l'indice du tableau représentant la multiplicité d'un élément.
+ Pour ajouter une nouvelle valeur, on teste sa présence dans le HashSet situé dans la première case.
+ Si il est présent, on teste sa présence dans le second HashSet, et ainsi de suite.
+  On l'ajoute dans le premier HashSet ne contenant pas l'élément à ajouter.
+
+Question 9 :
+
+-On peut réaliser une HashMap associant un élément à sa multiplicité.
+ On incrémente la valeur associée à un élément lorsqu'on l'ajoute.
+ 
+ 
+Question 10 :
+
+J'utiliserai une HashMap par simplicité : plus efficace qu'un HashSet comme vu plus haut.
+La méthode d'ajout devient par ailleurs extrêmement courte en 1.8
+
+Question 11 :
+
+import java.util.HashMap;
+public class Multiensemble<E> implements Iterable<E>{
+  Map<E, Integer> map;
+  
+  public Multiensemble() {
+    map = new HashMap<>();
+  }
+  
+  public void add(E it) {
+    if (E == null) throw new IllegalArgumentException();
+    if(( Integer i = map.putIfAbsent(it, 1)) != null) i++;
+  
+  
+  Question 13 :
+  
+  Dans mon implémentation, MyIterator est une classe interne.
+  
+  
+  private class MyIterator extends Iterator<E> {
+    Iterator<E> it;
+    
+    public MyIterator(Map<E, Integer> map) {
+      LinkedList<E> list = new LinkedList<>();
+      for (Map.Entry<E, Integer> entry : map.entrySet()) {
+        for (int i = 0 ; i < entry.getValue() ; i++) {
+          list.add(entry.getKey());
+        }
+      }
+      it = list.iterator();
+    }
+    
+    public boolean hasNext() {
+      return it.hasNext();
+    }
+    
+    
+    public E next() {
+      return it.next();
+    }
+    
+    public void remove() {
+      throw new UnsupportedOperationException();
+    }
+    
+  }
+  
+b- La class MyIterator est une classe interne à Multiensemble.
+
+c- public Iterator<E> iterator() {
+     return new MyIterator(map);
+   }
+   
+
+Question 14 :
+
+Je passe
+
+
+Question 15 :
+  Encore une fois, le TreeSet ne permet pas d'obtenir directement la multiplicité, je choisirais un TreeMap.
