@@ -292,15 +292,15 @@ public class VisitorInf {
   }
   
   public void visitNoeudPlus(NoeudPlus n, StringBuilder res) {
-    res.append("+  ");
     if (filsGauche != null) n.filsGauche.accepter(this, res);
     if (filsDroit != null)  n.filsDroit.accepter(this, res);
+    res.append("+  ");
   }
   
   public void visitNoeudMoins(NoeudMoins n, StringBuilder res) {
-    res.append("+  ");
     if (filsGauche != null) n.filsGauche.accepter(this, res);
     if (filsDroit != null)  n.filsDroit.accepter(this, res);
+    res.append("-  ");
   }
 }
 
