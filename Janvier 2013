@@ -10,11 +10,11 @@ TAD LispList :
 
 Fonctions : 
 
-new     :                    -> LispList
-estVide : LispList           -> boolean
-car     : LispList           -> Elément
-cdr     : LispList           -> LispList
-cons    : LispList * Elément -> LispList
+new     :                    ---> LispList
+estVide : LispList           ---> boolean
+car     : LispList           --/-> Elément  // Corrigé : une flèche barrée signifie une fonction partielle
+cdr     : LispList           --/-> LispList // c-a-d une fonction soumise à précondition
+cons    : LispList * Elément ---> LispList
 
 
 Axiomes :
