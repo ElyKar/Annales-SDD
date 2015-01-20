@@ -61,12 +61,12 @@ Exercice 3 :
 
 Fonctions :
 
-new        :                -> Pile
-pileVide   : Pile           -> boolean
-empiler    : Pile * Elément -> Pile
-depiler    : Pile           -> Pile
-sommetPile : Pile           -> Elément
-inserer    : Pile * Elément -> Pile
+new        :                ---> Pile
+pileVide   : Pile           ---> boolean
+empiler    : Pile * Elément --/-> Pile
+depiler    : Pile           --/-> Pile
+sommetPile : Pile           --/-> Elément
+inserer    : Pile * Elément --/-> Pile
 
 Axiomes : 
 
