@@ -121,8 +121,8 @@ classe Arbre :
 
 public void visiter() {
   StringBuilder res = new StringBuilder();
-  StringBuilder.append(nom+" : ");
-  visiter(racine);
+  res.append(nom+" : ");
+  racine.visiter(res);
   System.out.println(res);
 }
 
