@@ -63,7 +63,7 @@ public class PolygoneImpl implements Polygone, Iterable<T>{
   }
   
   public Iterator<T> iterator() {
-    return new IterateurPoints();
+    return new IterateurPoints(this);
   }
 }
 
